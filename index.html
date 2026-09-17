@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#12251f">
+    <meta name="description" content="Local-first Indian equity research and portfolio analysis.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; worker-src 'self'; manifest-src 'self'">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+    <title>YieldAlpha — Equity Research</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="YieldAlpha home">
+          <span class="brand-mark" aria-hidden="true">Y</span>
+          <span><strong>YieldAlpha</strong><small>Indian equity research</small></span>
+        </a>
+        <div class="topbar-actions">
+          <span class="status-pill" id="connection-status"><span class="status-dot"></span><span>Checking connection</span></span>
+          <button class="icon-button" id="install-button" type="button" hidden>Install</button>
+          <button class="icon-button" id="theme-button" type="button" aria-label="Toggle theme">◐</button>
+        </div>
+      </header>
+
+      <main>
+        <nav class="section-nav" aria-label="Research workspace sections">
+          <a class="active" href="#overview" aria-current="page">Overview</a>
+          <a href="#analysis">Analysis</a>
+          <a href="#data-sources">Data sources</a>
+          <a href="#signals">Signals</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#performance">Performance</a>
+          <a href="#backtest">Backtest</a>
+          <a href="#reports">Reports</a>
+          <a href="#integrity">Data integrity</a>
+          <a href="#privacy">Privacy</a>
+          <a href="./DATA_AVAILABILITY_MATRIX.html">Data matrix</a>
+          <span class="nav-context">Local workspace</span>
+        </nav>
+        <div class="offline-banner" id="offline-banner" role="status" aria-live="polite" hidden></div>
+        <section class="hero" id="overview" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">Research workspace <span class="demo-label">Demonstration shell</span></p>
+            <h1 id="page-title">See the signal before the noise.</h1>
+            <p class="hero-copy">A calm, auditable workspace for Indian equity research, model signals, and portfolio decisions.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="primary-button" id="refresh-button" type="button">Refresh workspace</button>
+            <p class="last-updated" id="last-updated">Last checked: Not checked yet</p>
+          </div>
+        </section>
+
+        <section class="analysis-workspace" id="analysis" aria-labelledby="analysis-title">
+          <article class="panel panel-wide">
+            <div class="panel-heading">
+              <div><p class="eyebrow">Analysis workspace</p><h2 id="analysis-title">Refresh fresh data, then run the model.</h2></div>
+              <span class="panel-kicker" id="analysis-provider-status">Provider not configured</span>
+            </div>
+            <p class="panel-note">YieldAlpha does not seed prices, dividends, companies, or recommendations. Leave the endpoint blank to use the local Python public-source snapshot, or configure an HTTPS CORS-enabled provider that returns the contract documented in <code>DATA_INT.md</code>. Provider responses, normalized records, snapshots, model settings, alerts, and audit events are retained locally.</p>
+            <form class="analysis-form" id="analysis-form">
+              <label>Provider endpoint <span class="field-optional">optional</span><input id="provider-endpoint" name="endpoint" type="url" inputmode="url" placeholder="Leave blank for Python public snapshot" autocomplete="url"><small>Only needed for the optional browser adapter; must be HTTPS and CORS-enabled.</small></label>
+              <label>API key <span class="field-optional">optional</span><input id="provider-api-key" name="apiKey" type="password" autocomplete="off" placeholder="Stored only in this browser"><small>Use a server-side gateway for production secrets; this local adapter sends it from the browser.</small></label>
+              <label>Target CAGR<input id="analysis-cagr" name="requiredCagr" type="number" min="0" max="100" step="0.1" value="12" required><small>Percent</small></label>
+              <label>Inflation<input id="analysis-inflation" name="inflationRate" type="number" min="0" max="100" step="0.1" value="8" required><small>Percent</small></label>
+              <label>Horizon<input id="analysis-horizon" name="horizonYears" type="number" min="1" max="30" step="1" value="5" required><small>Years</small></label>
+              <button class="primary-button analysis-submit" id="analysis-run-button" type="submit">REFRESH &amp; RUN ANALYSIS</button>
+            </form>
+            <div class="public-snapshot-actions"><button class="secondary-button" id="load-public-snapshot-button" type="button">Load latest Python public snapshot</button><small>Run <code>npm run data:fetch</code> first; leaving the endpoint blank uses <code>data/public-data.json</code> without an API key.</small></div>
+            <p class="analysis-status" id="analysis-status" role="status" aria-live="polite">Waiting for a provider configuration.</p>
+            <div class="analysis-counts" aria-label="Analysis counts">
+              <div><span>Universe</span><strong id="analysis-count-universe">0</strong></div><div><span>BUY</span><strong id="analysis-count-buy">0</strong></div><div><span>WATCH</span><strong id="analysis-count-watch">0</strong></div><div><span>AVOID</span><strong id="analysis-count-avoid">0</strong></div><div><span>Insufficient</span><strong id="analysis-count-insufficient">0</strong></div>
+            </div>
+            <div class="analysis-results" id="analysis-results" aria-live="polite"><p class="panel-note">Results will appear here after a completed refresh and model run.</p></div>
+          </article>
+        </section>
+
+        <section class="workspace-grid" id="backtest" aria-labelledby="backtest-title">
+          <article class="panel panel-wide">
+            <div class="panel-heading"><div><p class="eyebrow">Historical validation</p><h2 id="backtest-title">Point-in-time backtest</h2></div><span class="panel-kicker" id="backtest-status">Awaiting historical data</span></div>
+            <p class="panel-note">Backtests use only model snapshots available by the selected analysis date. Historical prices, dividends, corporate actions, and Nifty/Sensex TRI data must be loaded before a meaningful result can be produced.</p>
+            <form class="analysis-form" id="backtest-form">
+              <label>Analysis date<input name="analysisDate" type="date" required></label>
+              <label>Execution date<input name="executionDate" type="date" required></label>
+              <label>End date<input name="endDate" type="date" required></label>
+              <label>Starting capital<input name="startingCapital" type="number" min="1" step="1" value="1000000" required></label>
+              <label>Benchmark<select name="benchmarkId" id="backtest-benchmark" required><option value="">Load benchmarks first</option></select></label>
+              <button class="secondary-button analysis-submit" type="submit">RUN POINT-IN-TIME BACKTEST</button>
+            </form>
+            <p class="analysis-status" id="backtest-result" role="status" aria-live="polite">No backtest has been run.</p>
+            <div class="analysis-results" id="backtest-history" aria-live="polite"><p class="panel-note">Saved backtests will appear here.</p></div>
+          </article>
+        </section>
+
+        <section class="workspace-grid" id="reports" aria-labelledby="reports-title">
+          <article class="panel panel-wide">
+            <div class="panel-heading"><div><p class="eyebrow">Reproducible evidence</p><h2 id="reports-title">Reports</h2></div><span class="panel-kicker" id="reports-status">No reports yet</span></div>
+            <p class="panel-note">Reports preserve the model version, settings, data snapshot, source evidence, limitations, and audit references used to produce them.</p>
+            <div class="hero-actions"><button class="secondary-button" id="generate-latest-report-button" type="button">GENERATE LATEST SIGNAL REPORT</button><button class="secondary-button" id="reports-refresh-button" type="button">REFRESH REPORT LIST</button></div>
+            <div class="analysis-results" id="reports-list" aria-live="polite"><p class="panel-note">Saved reports will appear here.</p></div>
+          </article>
+        </section>
+
+        <section class="data-sources-workspace" id="data-sources" aria-labelledby="data-sources-title">
+          <article class="panel panel-wide">
+            <div class="panel-heading"><div><p class="eyebrow">Data source catalog</p><h2 id="data-sources-title">Configured research sources</h2></div><span class="panel-kicker" id="data-sources-status">Loading source catalog</span></div>
+            <p class="panel-note">These source rows were preconfigured from the workbook’s <strong>Data Sources</strong> tab. They document provenance and licensing intent; they do not scrape websites or supply market observations. Edit a row when your licensed provider, company filing, or source URL differs.</p>
+            <div class="data-source-list" id="data-source-list" aria-live="polite"><p class="panel-note">Loading configured sources…</p></div>
+            <form class="data-source-add" id="data-source-add-form">
+              <h3>Add source</h3>
+              <div class="data-source-add-fields"><label>Name<input name="name" required placeholder="Source name"></label><label>Tier<select name="tier"><option>Tier 1</option><option>Tier 2</option><option>Tier 3</option><option>Tier 4</option><option>Context</option></select></label><label>URL or identifier<input name="url" required placeholder="https://…"></label><button class="secondary-button" type="submit">Add source</button></div>
+            </form>
+          </article>
+        </section>
+
+        <section class="metric-grid" aria-label="Workspace overview">
+          <article class="metric-card metric-card-featured"><span>Portfolio value</span><strong id="metric-portfolio-value">—</strong><small id="metric-portfolio-note">No local portfolio loaded</small></article>
+          <article class="metric-card"><span>Expected 5Y CAGR</span><strong id="metric-expected-cagr">—</strong><small id="metric-cagr-note">Model not run</small></article>
+          <article class="metric-card"><span>Real CAGR</span><strong id="metric-real-cagr">—</strong><small>Inflation-adjusted</small></article>
+          <article class="metric-card"><span>Dividend yield</span><strong id="metric-dividend-yield">—</strong><small id="metric-dividend-note">Awaiting data</small></article>
+          <article class="metric-card"><span>Nifty relative return</span><strong id="metric-relative-return">—</strong><small>Latest saved analysis</small></article>
+          <article class="metric-card"><span>Sensex relative return</span><strong id="metric-sensex-relative-return">—</strong><small>Latest saved analysis</small></article>
+          <article class="metric-card"><span>Alerts</span><strong id="metric-alerts">0</strong><small id="metric-alert-note">No unread critical alerts</small></article>
+        </section>
+
+        <section class="workspace-grid">
+          <article class="panel panel-wide">
+            <div class="panel-heading"><div><p class="eyebrow">Recommendation monitor</p><h2>Changes requiring attention</h2></div><a href="#alerts">View alert center <span aria-hidden="true">↗</span></a></div>
+            <div class="empty-state" id="alerts-empty">
+              <span class="empty-icon" aria-hidden="true">✓</span>
+              <div><strong>No recommendation changes yet</strong><p>When a refresh or model run changes a potential portfolio recommendation, the before-and-after explanation will appear here.</p></div>
+            </div>
+            <div class="alert-feed" id="alerts" aria-live="polite" hidden></div>
+            <div class="alert-controls"><button class="secondary-button" id="notification-button" type="button">Enable browser notifications</button><label class="preference-toggle"><input id="notification-vibrate" type="checkbox" checked> Vibrate critical/high</label><span id="notification-status">Not enabled</span></div>
+          </article>
+          <article class="panel" id="signals">
+            <div class="panel-heading"><div><p class="eyebrow">Signal mix</p><h2>Potential candidates</h2></div><span class="panel-kicker">Local</span></div>
+            <div class="signal-list"><div><span class="signal-label"><i class="signal buy"></i>BUY</span><strong id="signal-buy">0</strong></div><div><span class="signal-label"><i class="signal watch"></i>WATCH</span><strong id="signal-watch">0</strong></div><div><span class="signal-label"><i class="signal avoid"></i>AVOID</span><strong id="signal-avoid">0</strong></div><div><span class="signal-label"><i class="signal insufficient"></i>INSUFFICIENT DATA</span><strong id="signal-insufficient">0</strong></div></div>
+            <p class="panel-note" id="signal-note">No live or imported research data is loaded.</p>
+          </article>
+        </section>
+
+        <section class="workspace-grid portfolio-grid">
+          <article class="panel panel-wide" id="portfolio"><div class="panel-heading"><div><p class="eyebrow">Local portfolio</p><h2 id="portfolio-name">No portfolio selected</h2></div><span class="panel-kicker" id="portfolio-method">Awaiting setup</span></div><div class="portfolio-summary-grid"><div><span>Positions</span><strong id="portfolio-positions">0</strong></div><div><span>Expected 5Y value</span><strong id="portfolio-five-year-value">—</strong></div><div><span>Inflation-adjusted</span><strong id="portfolio-real-value">—</strong></div><div><span>Realised return</span><strong id="portfolio-realised-return">—</strong></div><div><span>Risk concentration</span><strong id="portfolio-risk">—</strong></div><div><span>Watchlists</span><strong id="portfolio-watchlists">0</strong></div></div><p class="panel-note" id="portfolio-note">Create a local portfolio and save an allocation plan to see holdings, expectations, and risk.</p></article>
+        </section>
+
+        <section class="workspace-grid lower-grid">
+          <article class="panel chart-panel" id="performance"><div class="panel-heading"><div><p class="eyebrow">Performance</p><h2>Portfolio versus benchmark</h2></div><span class="panel-kicker" id="performance-status">Not available</span></div><div class="chart-placeholder" id="performance-chart" aria-label="Portfolio chart unavailable until data is loaded"><span>—</span><p>Load a portfolio and benchmark history to compare results.</p></div></article>
+          <article class="panel" id="integrity"><div class="panel-heading"><div><p class="eyebrow">Data integrity</p><h2>Workspace health</h2></div><span class="health-badge" id="health-status">Ready</span></div><ul class="health-list"><li><span>Local storage</span><strong id="storage-health">Checking</strong></li><li><span>Offline shell</span><strong id="offline-shell-status">Checking</strong></li><li><span>Audit history</span><strong id="audit-health">Checking</strong></li><li><span>Market data</span><strong id="market-data-health">Not connected</strong></li><li><span>Data freshness</span><strong id="data-freshness-health">Not checked</strong></li><li><span>Provider check</span><strong id="provider-check-health">Not checked</strong></li><li><span>Recommendation check</span><strong id="recommendation-check-health">Not checked</strong></li></ul><div class="activity-heading"><span>Recent activity</span><a href="#activity">View all</a></div><ul class="activity-list" id="activity"><li><span>No local activity recorded.</span></li></ul></article>
+        </section>
+
+        <section class="chart-grid" aria-label="Research analytics">
+          <article class="panel chart-card"><div class="panel-heading"><div><p class="eyebrow">Expected return</p><h2>Return distribution</h2></div><span class="panel-kicker" data-chart-status>Awaiting local history</span></div><div class="mini-chart" aria-label="Expected return distribution is unavailable until model results are saved"><span>—</span><p>Model scenarios will appear here.</p></div></article>
+          <article class="panel chart-card"><div class="panel-heading"><div><p class="eyebrow">Income</p><h2>Dividend growth</h2></div><span class="panel-kicker" data-chart-status>Awaiting local history</span></div><div class="mini-chart" aria-label="Dividend growth is unavailable until dividend history is loaded"><span>—</span><p>Dividend history will appear here.</p></div></article>
+          <article class="panel chart-card"><div class="panel-heading"><div><p class="eyebrow">Valuation</p><h2>Valuation history</h2></div><span class="panel-kicker" data-chart-status>Awaiting local history</span></div><div class="mini-chart" aria-label="Valuation history is unavailable until valuation snapshots are loaded"><span>—</span><p>Valuation snapshots will appear here.</p></div></article>
+          <article class="panel chart-card"><div class="panel-heading"><div><p class="eyebrow">Signals</p><h2>Signal history</h2></div><span class="panel-kicker" data-chart-status>Awaiting local history</span></div><div class="mini-chart" aria-label="Signal history is unavailable until model runs are saved"><span>—</span><p>Recommendation history will appear here.</p></div></article>
+          <article class="panel chart-card"><div class="panel-heading"><div><p class="eyebrow">Portfolio</p><h2>Sector allocation</h2></div><span class="panel-kicker" data-chart-status>Awaiting local history</span></div><div class="mini-chart" aria-label="Sector allocation is unavailable until a portfolio is loaded"><span>—</span><p>Portfolio allocation will appear here.</p></div></article>
+          <article class="panel chart-card"><div class="panel-heading"><div><p class="eyebrow">Risk</p><h2>Concentration</h2></div><span class="panel-kicker" data-chart-status>Awaiting local history</span></div><div class="mini-chart" aria-label="Portfolio concentration is unavailable until a portfolio is loaded"><span>—</span><p>Concentration and risk will appear here.</p></div></article>
+        </section>
+
+        <section class="workspace-grid privacy-grid">
+          <article class="panel privacy-panel" id="privacy">
+            <div class="panel-heading"><div><p class="eyebrow">Privacy controls</p><h2>Your workspace stays on this device.</h2></div><span class="panel-kicker">Local only</span></div>
+            <p class="panel-note">YieldAlpha does not require an account. Portfolio, watchlist, report, alert, and audit data are stored in this browser. Export a backup before clearing local data or changing devices.</p>
+            <div class="privacy-actions">
+              <button class="secondary-button" id="backup-export-button" type="button">Export workspace backup</button>
+              <label class="secondary-button file-button">Restore backup<input id="backup-restore-input" type="file" accept="application/json,.json"></label>
+              <button class="danger-button" id="workspace-reset-button" type="button">Reset local workspace</button>
+            </div>
+            <p class="panel-note" id="privacy-action-status" role="status">No privacy action taken.</p>
+          </article>
+        </section>
+
+        <section class="disclaimer"><strong>Research disclaimer</strong><p>This application provides quantitative research and historical analysis. Model outputs and BUY/WATCH/AVOID classifications are estimates based on assumptions and historical data. They do not guarantee future performance and should not be considered personalized investment advice.</p></section>
+      </main>
+
+      <footer class="footer"><span>YieldAlpha local workspace</span><span id="app-version">PWA shell · v0.1.0</span></footer>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

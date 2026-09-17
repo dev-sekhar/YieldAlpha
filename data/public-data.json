@@ -1,0 +1,21 @@
+{
+  "format": "yieldalpha-public-data-snapshot",
+  "formatVersion": 1,
+  "generatedAt": "2026-08-29T04:54:54.965661+00:00",
+  "provider": "NSE India public web source",
+  "records": {
+    "companies": [],
+    "securities": [],
+    "priceHistory": [],
+    "dividends": [],
+    "corporateActions": [],
+    "sourceRecords": []
+  },
+  "errors": [
+    {
+      "symbol": "BEL",
+      "source": "NSE quote",
+      "error": "NSE session unavailable: HTTPSConnectionPool(host='www.nseindia.com', port=443): Read timed out. (read timeout=8.0)"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "yieldalpha",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local-first Indian equity research PWA",
+  "scripts": {
+    "start": "node scripts/start.mjs",
+    "data:fetch": "python3 yieldalpha_fresh_data_fetch_scaffold.py",
+    "diagnose:data": "python3 diagnose_data_sources.py",
+    "build": "node scripts/build.mjs",
+    "lint": "node scripts/lint.mjs",
+    "security:check": "node scripts/security-check.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "test:python": "python3 -m unittest discover -s tests -p 'public_extractors_test.py'",
+    "test:unit": "node scripts/test-unit.mjs",
+    "test:integration": "node --test tests/phase*.test.mjs",
+    "test:e2e": "node --test tests/e2e-contract.test.mjs",
+    "accessibility:check": "node scripts/accessibility-check.mjs",
+    "performance:check": "node scripts/performance-check.mjs",
+    "pwa:check": "node --test tests/pwa-contract.test.mjs",
+    "release:check": "node scripts/release-check.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

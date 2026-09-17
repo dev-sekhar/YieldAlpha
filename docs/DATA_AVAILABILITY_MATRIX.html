@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="YieldAlpha data availability matrix based on actual local tests.">
+  <title>YieldAlpha — Data Availability Matrix</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #17202a; background: #f3f6f8; }
+    body { margin: 0; } main { max-width: 1280px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+    header, section { background: #fff; border: 1px solid #d9e1e6; border-radius: .75rem; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 4px 14px rgb(23 32 42 / 5%); }
+    h1, h2 { margin: 0 0 .5rem; color: #12251f; } h1 { font-size: clamp(1.7rem, 5vw, 2.6rem); } h2 { font-size: 1.25rem; }
+    p { line-height: 1.55; margin: .5rem 0; } .summary { border-left: .35rem solid #c47b28; background: #fff9ef; padding: .8rem 1rem; border-radius: .35rem; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; } table { width: 100%; min-width: 800px; border-collapse: collapse; font-size: .92rem; }
+    th, td { border-bottom: 1px solid #e3e8eb; padding: .75rem .65rem; text-align: left; vertical-align: top; line-height: 1.4; } th { background: #eef3f1; color: #12251f; font-size: .8rem; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; } .status { display: inline-block; border-radius: 999px; padding: .22rem .55rem; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+    .pass { color: #14532d; background: #dcfce7; } .warn { color: #854d0e; background: #fef3c7; } .fail { color: #991b1b; background: #fee2e2; } .muted { color: #52606d; }
+    code { background: #eef1f3; border-radius: .25rem; padding: .1rem .25rem; overflow-wrap: anywhere; } footer { color: #52606d; font-size: .85rem; padding: 0 .25rem; }
+    @media (max-width: 640px) { main { padding: 1rem .65rem 2rem; } header, section { padding: 1rem; border-radius: .55rem; } table { min-width: 720px; } th, td { padding: .6rem .5rem; } }
+  </style>
+</head>
+<body><main>
+  <header>
+    <h1>YieldAlpha data availability matrix</h1>
+    <p class="muted">Updated: 2026-08-29 · Separates implemented extractors from observed live retrieval.</p>
+    <p class="summary"><strong>Current conclusion:</strong> all requested local extractor families and fallback chains are implemented. This runtime cannot resolve public hosts, so it has observed no live market records. Missing data remains unavailable; it is never replaced with zero.</p>
+  </header>
+  <section><h2>Data-point matrix</h2><div class="table-wrap"><table>
+    <thead><tr><th>Data point</th><th>Source / fallback order</th><th>Extractor</th><th>Actual local test</th><th>Current result</th></tr></thead>
+    <tbody>
+      <tr><td>Current price + 52-week range</td><td>NSE → Moneycontrol → ET Markets → Upstox → Dhan → ICICI Direct</td><td><span class="status pass">Implemented</span></td><td>BEL fetch; 18-source diagnostics</td><td><span class="status fail">Not retrieved</span> — runtime DNS failure</td></tr>
+      <tr><td>Dividend history</td><td>NSE → BSE → company IR → Moneycontrol → Goodreturns → Investing.com</td><td><span class="status pass">Implemented</span></td><td>HTML fixtures pass; BEL fetch attempted</td><td><span class="status warn">Parser works</span>; live network unavailable</td></tr>
+      <tr><td>Corporate actions</td><td>NSE public route with dividend fallbacks</td><td><span class="status pass">Implemented</span></td><td>NSE route exercised to DNS failure</td><td><span class="status fail">No live event</span></td></tr>
+      <tr><td>Exchange and listing date</td><td>NSE → BSE → company IR</td><td><span class="status pass">Implemented</span></td><td>Listing fixture passes</td><td><span class="status warn">Not live-tested</span></td></tr>
+      <tr><td>Historical OHLCV</td><td>EquityPandit → StockPriceArchive</td><td><span class="status pass">Implemented</span></td><td>OHLC fixture passes; date is excluded from numeric columns</td><td><span class="status warn">Not live-tested</span></td></tr>
+      <tr><td>Revenue, PAT, EPS, equity, debt, cash, EBIT</td><td>Company filings → secondary public financial page</td><td><span class="status pass">Implemented</span></td><td>Financial statement fixture passes</td><td><span class="status warn">Not live-tested</span></td></tr>
+      <tr><td>Free cash flow</td><td>Operating cash flow − absolute capex</td><td><span class="status pass">Calculated locally</span></td><td>Normalization path implemented</td><td>Depends on sourced statements</td></tr>
+      <tr><td>ROE, ROCE, debt/equity, earnings growth</td><td>Calculated from sourced statement values</td><td><span class="status pass">Calculated locally</span></td><td>Normalization path implemented</td><td>Depends on sourced statements</td></tr>
+      <tr><td>P/E valuation</td><td>Configured public valuation page</td><td><span class="status pass">Implemented</span></td><td>Valuation fixture passes</td><td><span class="status warn">Not live-tested</span></td></tr>
+      <tr><td>Nifty 50 TRI / Sensex TRI</td><td>Nifty Indices / BSE configured history pages</td><td><span class="status pass">Implemented</span></td><td>Benchmark parser/normalization path implemented</td><td><span class="status warn">Not live-tested</span></td></tr>
+      <tr><td>Raw response, provenance, stale fallback</td><td>Local SQLite + browser IndexedDB</td><td><span class="status pass">Implemented</span></td><td>Failure snapshot and fixture paths pass</td><td>Failed attempts retained; prior usable snapshot protected</td></tr>
+    </tbody>
+  </table></div></section>
+  <section><h2>Actual test evidence</h2><div class="table-wrap"><table>
+    <thead><tr><th>Test</th><th>Result</th></tr></thead><tbody>
+      <tr><td><code>npm run typecheck</code></td><td><span class="status pass">Passed</span></td></tr>
+      <tr><td><code>npm test</code></td><td><span class="status pass">Passed</span></td></tr>
+      <tr><td><code>npm run test:python</code></td><td><span class="status pass">Passed</span> — quote, dividend, OHLCV, fundamentals, valuation, benchmark, parser failure fixtures</td></tr>
+      <tr><td><code>npm run diagnose:data -- --timeout 1</code></td><td><span class="status fail">Exit 1</span> — 18 sources, 18 DNS failures, 0 reachable, 0 records</td></tr>
+      <tr><td><code>npm run data:fetch -- --symbols BEL --timeout 1</code></td><td><span class="status fail">No live records</span> — 21 fallback routes attempted; public DNS resolution failed; errors retained</td></tr>
+      <tr><td><code>getent</code>, Python <code>getaddrinfo</code>, <code>curl</code></td><td><span class="status fail">Failed</span> for <code>www.nseindia.com</code>; no address / could not resolve host</td></tr>
+      <tr><td>Browser/device live retrieval</td><td><span class="status warn">Not tested</span> — requires the user device/network</td></tr>
+    </tbody></table></div></section>
+  <section><h2>Configure and run</h2><p>The fetcher automatically uses <code>data/public-source-config.example.json</code>. Copy it to <code>data/public-source-config.json</code> to edit URLs or enable company-specific pages, then run <code>npm run data:fetch -- --symbols BEL POWERGRID SUNPHARMA LT BRITANNIA --timeout 8</code>. The fetcher tries sources in order and writes only observed values.</p></section>
+  <footer>Generated for the local YieldAlpha workspace. Live acceptance must be performed from the user’s device because this runtime has no public DNS access.</footer>
+</main></body></html>

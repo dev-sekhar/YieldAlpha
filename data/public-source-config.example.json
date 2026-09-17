@@ -1,0 +1,42 @@
+{
+  "quotes": [
+    {"source": "Moneycontrol", "extractor": "MoneycontrolQuoteExtractor", "sourceTier": 3, "urlTemplate": "https://www.moneycontrol.com/india/stockpricequote/{symbol}"},
+    {"source": "Economic Times Markets", "extractor": "EconomicTimesQuoteExtractor", "sourceTier": 3, "urlTemplate": "https://economictimes.indiatimes.com/markets/stocks/stock-quotes/{symbol}"},
+    {"source": "Upstox", "extractor": "UpstoxQuoteExtractor", "sourceTier": 3, "urlTemplate": "https://upstox.com/stocks/{symbol}-share-price/"},
+    {"source": "Dhan", "extractor": "DhanQuoteExtractor", "sourceTier": 3, "urlTemplate": "https://dhan.co/stocks/{symbol}-share-price/"},
+    {"source": "ICICI Direct", "extractor": "ICICIDirectQuoteExtractor", "sourceTier": 3, "urlTemplate": "https://www.icicidirect.com/stocks/{symbol}-share-price"}
+  ],
+  "dividends": [
+    {"source": "NSE India", "extractor": "NSEDividendExtractor", "sourceTier": 1, "urlTemplate": "https://www.nseindia.com/companies-listing/corporate-filings-actions/{symbol}"},
+    {"source": "BSE India", "extractor": "BSEDividendExtractor", "sourceTier": 1, "urlTemplate": "https://www.bseindia.com/stock-share-price/{symbol}/"},
+    {"source": "Company investor relations", "extractor": "CompanyIRDividendExtractor", "sourceTier": 1, "enabled": false, "urlTemplate": "https://replace-with-company-ir-url/{symbol}/dividends"},
+    {"source": "Moneycontrol", "extractor": "MoneycontrolDividendExtractor", "sourceTier": 3, "urlTemplate": "https://www.moneycontrol.com/financials/{symbol}/dividend-history"},
+    {"source": "Goodreturns", "extractor": "GoodreturnsDividendExtractor", "sourceTier": 4, "urlTemplate": "https://www.goodreturns.in/company/{symbol}/dividend.html"},
+    {"source": "Investing.com India", "extractor": "InvestingDividendExtractor", "sourceTier": 4, "urlTemplate": "https://in.investing.com/equities/{symbol}-dividends"}
+  ],
+  "historical_prices": [
+    {"source": "EquityPandit", "extractor": "EquityPanditHistoricalExtractor", "sourceTier": 4, "urlTemplate": "https://www.equitypandit.com/share-price/{symbol}/historical-data/?from={fromDate}&to={toDate}"},
+    {"source": "StockPriceArchive", "extractor": "StockPriceArchiveHistoricalExtractor", "sourceTier": 4, "urlTemplate": "https://stockpricearchive.com/{symbol}/"}
+  ],
+  "fundamentals": [
+    {"source": "Company filings", "extractor": "CompanyFilingFundamentalsExtractor", "sourceTier": 1, "enabled": false, "urlTemplate": "https://replace-with-company-filings-url/{symbol}/financial-results"},
+    {"source": "Public financial page", "extractor": "SecondaryFundamentalsExtractor", "sourceTier": 3, "urlTemplate": "https://www.moneycontrol.com/financials/{symbol}/results/"}
+  ],
+  "listings": [
+    {"source": "NSE India", "extractor": "NSEListingExtractor", "sourceTier": 1, "urlTemplate": "https://www.nseindia.com/get-quotes/equity?symbol={symbol}"},
+    {"source": "BSE India", "extractor": "BSEListingExtractor", "sourceTier": 1, "urlTemplate": "https://www.bseindia.com/stock-share-price/{symbol}/"},
+    {"source": "Company investor relations", "extractor": "CompanyIRListingExtractor", "sourceTier": 1, "enabled": false, "urlTemplate": "https://replace-with-company-ir-url/{symbol}/listing"}
+  ],
+  "corporate_actions": [
+    {"source": "NSE India", "extractor": "NSECorporateActionPageExtractor", "sourceTier": 1, "urlTemplate": "https://www.nseindia.com/get-quotes/equity?symbol={symbol}"},
+    {"source": "BSE India", "extractor": "BSECorporateActionPageExtractor", "sourceTier": 1, "urlTemplate": "https://www.bseindia.com/stock-share-price/{symbol}/"},
+    {"source": "Company investor relations", "extractor": "CompanyIRCorporateActionExtractor", "sourceTier": 1, "enabled": false, "urlTemplate": "https://replace-with-company-ir-url/{symbol}/corporate-actions"}
+  ],
+  "valuations": [
+    {"source": "Public valuation page", "extractor": "PublicValuationExtractor", "sourceTier": 3, "urlTemplate": "https://www.moneycontrol.com/financials/{symbol}/ratios/"}
+  ],
+  "benchmarks": [
+    {"source": "Nifty Indices", "extractor": "NiftyIndicesBenchmarkExtractor", "sourceTier": 1, "benchmarkCode": "NIFTY50_TRI", "urlTemplate": "https://www.niftyindices.com/reports/{benchmarkCode}?from={fromDate}&to={toDate}"},
+    {"source": "BSE India", "extractor": "BSEBenchmarkExtractor", "sourceTier": 1, "benchmarkCode": "SENSEX_TRI", "urlTemplate": "https://www.bseindia.com/indices/IndexArchiveData.html?index={benchmarkCode}"}
+  ]
+}

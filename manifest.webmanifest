@@ -1,0 +1,19 @@
+{
+  "name": "YieldAlpha — Indian Equity Research",
+  "short_name": "YieldAlpha",
+  "id": "./",
+  "description": "Local-first Indian equity research and portfolio analysis.",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "categories": ["finance", "productivity"],
+  "background_color": "#f5f7f3",
+  "theme_color": "#12251f",
+  "icons": [
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "./icons/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
